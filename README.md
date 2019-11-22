@@ -9,4 +9,4 @@ Dagger2
 Rxjava
 ThirdpartyLibrary : Retorfit  
 App working flow : Initally fetch all movies List from remote server and update in UI 
-Clicking on  movie. Its Show as Detail page about movie
+clicking on particular movie Its Show as Detail  about movie.

@@ -178,7 +178,7 @@ class MovieListViewModel() : BaseViewModel() {
 
     internal fun loadInitalMovieList() {
         loadingVisibility.value = View.VISIBLE
-
+        result.clear()
         loadMovieList()
     }
 

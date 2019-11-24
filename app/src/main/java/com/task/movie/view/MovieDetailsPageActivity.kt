@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.task.movie.R
-import com.task.movie.utilis.CommonUtilis
+import com.task.movie.utilis.CommonUtils
 import com.task.movie.utilis.Constants
 import kotlinx.android.synthetic.main.activity_moviedetails.*
 
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_moviedetails.*
  * Created by : SATHISH KUMAR R
  * Created on :21-11-2019 20:21
  * Updated on : 
- * File Name : MovieDetailsPage.kt
+ * File Name : MovieDetailsPageActivity.kt
  * ClassName : 
  * Module Name : app
  * Desc : 
@@ -33,8 +33,6 @@ class MovieDetailsPageActivity : AppCompatActivity() {
         getActivityContext = this@MovieDetailsPageActivity
         getBundleValue()
         loadData()
-
-
     }
 
 
@@ -42,39 +40,20 @@ class MovieDetailsPageActivity : AppCompatActivity() {
         val intent: Intent? = intent
         val bundle = intent!!.extras
         moviename = bundle!!.getString(Constants.TAG_MovieName)!!
-        desc = bundle.getString(Constants.TAG_Desc)!!
-        posterpath = bundle.getString(Constants.TAG_IMAGEURL)!!
-        ratingvalue = bundle.getDouble(Constants.TAG_RatingBar)
-
-
+        desc = bundle.getString(Constants.TAG_DESC)!!
+        posterpath = bundle.getString(Constants.TAG_IMAGE)!!
+        ratingvalue = bundle.getDouble(Constants.TAG_RATINGBAR)
     }
 
 
     private fun loadData() {
         if (moviename.isNotEmpty())  txtView_MovieName.text = moviename else txtView_MovieName.visibility = View.GONE
         if (desc.isNotEmpty())txtView_MovieDesc.text = desc else txtView_MovieDesc.visibility = View.GONE
-        if (posterpath.isNotEmpty())  CommonUtilis.setImageThumnail(posterpath,ImgView_MoviePoster) else ImgView_MoviePoster.visibility = View.GONE
+        if (posterpath.isNotEmpty())  CommonUtils.setImagePoster(posterpath,ImgView_MoviePoster) else ImgView_MoviePoster.visibility = View.GONE
         if (!ratingvalue.equals(0.0))  rating_Bar.rating = ratingvalue.div(2).toFloat() else rating_Bar.visibility = View.GONE
     }
 
 
-    override fun onStart() {
-        super.onStart()
-    }
-
-
-    override fun onRestart() {
-        super.onRestart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-    }
 
 
     override fun onBackPressed() {

@@ -1,9 +1,17 @@
 <resources>
     <string name="app_name">Movie</string>
-    <string name="str_retry">Retry</string>
+    <string name="retry">Retry</string>
 
-    <string name="str_dummyTextDesc">MovieReviewawesomeand Looking good</string>
-    <string name="str_movieTittle">Tittle</string>
-    <string name="str_post_error"><![CDATA[<string name=\"post_error\">An error occurred while loading the posts</string>]]></string>
-    <string name="str_moviename">Movie name </string>
+    <string name="dummyTextDesc">MovieReviewawesomeand Looking good</string>
+    <string name="movieTittle">Tittle</string>
+    <string name="post_error"><![CDATA[<string name=\"post_error\">An error occurred while loading the posts</string>]]></string>
+    <string name="movieName">Movie name </string>
+    <string name="tittle_network_error">Cannot access internet</string>
+    <string name="msg_error_state">Check your wi-fi connection. If you are at a work-place or coffee shop, you might
+        need to log in to your wi-fi to access the internet
+    </string>
+    <string name="cancel">Cancel</string>
+    <string name="noResultFound">No Result Found</string>
+    <string name="noItemFound">No Items Found</string>
+    <string name="search_MovieName">Search Movie Name</string>
 </resources>

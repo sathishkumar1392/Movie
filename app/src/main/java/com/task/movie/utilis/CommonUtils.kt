@@ -1,6 +1,5 @@
 package com.task.movie.utilis
 
-import android.content.Context
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import com.task.movie.R
@@ -16,9 +15,8 @@ import com.task.movie.R
  * Desc : 
  */
 
-object CommonUtilis {
-
-    fun setImageThumnail( imagepath: String, mImageView: ImageView) {
+object CommonUtils {
+    fun setImagePoster(imagepath: String, mImageView: ImageView) {
         Picasso.get().load(Constants.TAG_IMAGEURL + imagepath)
             .placeholder(R.drawable.ic_launcher_background).into(mImageView)
     }

@@ -20,7 +20,7 @@ import javax.inject.Singleton
 interface ViewModelInjector {
     /**
      * Injects required dependencies into the specified MovieListViewModel.
-     * @param MovieListViewModel MovieListViewModel in which to inject the dependencies
+     *  which to inject the dependencies
      */
     fun inject(movieListViewModel:MovieListViewModel)
 
@@ -30,6 +30,7 @@ interface ViewModelInjector {
         fun build(): ViewModelInjector
 
         fun networkModule(networkModule: RetrofitClient): Builder
+
     }
 
 

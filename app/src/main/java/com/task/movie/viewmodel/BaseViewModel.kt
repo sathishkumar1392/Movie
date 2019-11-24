@@ -23,7 +23,6 @@ abstract class BaseViewModel: ViewModel() {
         .networkModule(RetrofitClient)
         .build()
 
-
     init {
         inject()
     }
@@ -33,6 +32,4 @@ abstract class BaseViewModel: ViewModel() {
             is MovieListViewModel -> injector.inject(this)
         }
     }
-
-
 }

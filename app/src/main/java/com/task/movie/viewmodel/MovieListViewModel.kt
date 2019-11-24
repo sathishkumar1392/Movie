@@ -1,13 +1,16 @@
 package com.task.movie.viewmodel
 
+import android.content.Context
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.task.movie.BuildConfig
+import com.task.movie.R
 import com.task.movie.model.MovieApiResponseModel
 import com.task.movie.model.Result
 import com.task.movie.remote.repository.RetrofitInterface
 import com.task.movie.utilis.Constants
+import com.task.movie.utilis.NetworkConnectivity
 import com.task.movie.view.adapter.MovieAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -21,12 +24,11 @@ import javax.inject.Inject
  * Project Name : Movie
  * Created by : SATHISH KUMAR R
  * Created on :17-11-2019 14:37
- * File Name : MovieListViewModel.kt ClassName : MovieListViewModel
+ * File Name : MovieListViewModel.kt
  * Module Name : app
- * Desc :  This MovieListViewModel  class receives data from server and Update to UI part.
  */
 
-class MovieListViewModel() : BaseViewModel() {
+class MovieListViewModel : BaseViewModel() {
 
 
     @Inject
@@ -39,73 +41,85 @@ class MovieListViewModel() : BaseViewModel() {
     private lateinit var subscription: Disposable
     private var totalPageNumber: Int = 0
     private var userClickedItemObservable = MutableLiveData<Result>()
+    private var networkStatus = MutableLiveData<Boolean>()
+    private lateinit var getContext: Context
+
 
     init {
-        loadMovieList()
+        onItemClick()
     }
-
 
     override fun onCleared() {
         super.onCleared()
         subscription.dispose()
     }
 
+    internal fun loadMovieList(context: Context) {
+        getContext = context
+        if (NetworkConnectivity.isNetworkAvailable(getContext)) {
+            subscription = movieListApi.getMovieList(
+                BuildConfig.API_KEY,
+                Constants.TAG_LANGUAGE,
+                Constants.PAGE_NUMBER
+            )
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { onRetrieveMovieListStart() }
+                .doOnTerminate { onRetrieveMovieListFinish() }
+                .subscribeWith(object : DisposableObserver<Response<MovieApiResponseModel>>() {
+                    override fun onComplete() {
 
-    private fun loadMovieList() {
-        subscription = movieListApi.getMovieList(
-            BuildConfig.API_KEY,
-            Constants.TAG_LANGUAGE,
-            Constants.PAGE_NUMBER
-        )
-            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { onRetrieveMovieListStart() }
-            .doOnTerminate { onRetrieveMovieListFinish() }
-            .subscribeWith(object : DisposableObserver<Response<MovieApiResponseModel>>() {
-                override fun onComplete() {
+                    }
 
-                }
+                    override fun onNext(t: Response<MovieApiResponseModel>) {
+                        onRetrievePostListSuccess(t)
+                    }
 
-                override fun onNext(t: Response<MovieApiResponseModel>) {
-                    onRetrievePostListSuccess(t)
-                }
+                    override fun onError(e: Throwable) {
+                        onRetrievePostListError(e)
+                    }
 
-                override fun onError(e: Throwable) {
-                    onRetrievePostListError(e)
-                }
+                })
 
-            })
-        OnItemClick()
+        } else {
+            networkStatus.value = true
+
+        }
+
     }
 
 
     internal fun loadMore(userScrolled: Boolean) {
-        if (totalPageNumber == Constants.PAGE_NUMBER) {
-            Constants.PAGE_NUMBER = 0
-        }
-        if (userScrolled) {
-            Constants.PAGE_NUMBER = Constants.PAGE_NUMBER + 1
-        }
-        subscription = movieListApi.getMovieList(
-            BuildConfig.API_KEY,
-            Constants.TAG_LANGUAGE, Constants.PAGE_NUMBER
-        )
-            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { onRetrieveMovieListStart() }
-            .doOnTerminate { onRetrieveMovieListFinish() }
-            .subscribeWith(object : DisposableObserver<Response<MovieApiResponseModel>>() {
-                override fun onComplete() {
+        if (NetworkConnectivity.isNetworkAvailable(getContext)) {
+            if (totalPageNumber == Constants.PAGE_NUMBER) {
+               // Constants.PAGE_NUMBER = 1
+                errorMessage.value = R.string.noResultFound
+            }else if (userScrolled){
+                Constants.PAGE_NUMBER = Constants.PAGE_NUMBER + 1
+                subscription = movieListApi.getMovieList(
+                    BuildConfig.API_KEY,
+                    Constants.TAG_LANGUAGE, Constants.PAGE_NUMBER
+                )
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe { onRetrieveMovieListStart() }
+                    .doOnTerminate { onRetrieveMovieListFinish() }
+                    .subscribeWith(object : DisposableObserver<Response<MovieApiResponseModel>>() {
+                        override fun onComplete() {
 
-                }
+                        }
 
-                override fun onNext(t: Response<MovieApiResponseModel>) {
-                    onUpdateList(t)
-                }
+                        override fun onNext(t: Response<MovieApiResponseModel>) {
+                            onUpdateList(t)
+                        }
 
-                override fun onError(e: Throwable) {
-                    onRetrievePostListError(e)
-                }
+                        override fun onError(e: Throwable) {
+                            onRetrievePostListError(e)
+                        }
 
-            })
+                    })
+            }else{
+                networkStatus.value = true
+            }
+            }
     }
 
     private fun onUpdateList(res: Response<MovieApiResponseModel>) {
@@ -129,11 +143,14 @@ class MovieListViewModel() : BaseViewModel() {
     private fun onRetrievePostListSuccess(response: Response<MovieApiResponseModel>) {
         if (response.isSuccessful) {
             val request = response.body()
-            totalPageNumber = request!!.totalPages
-            result = request.results as MutableList
-            movieListAdapter.updateMovieList(result)
+            if (request!!.totalResults>0) {
+                totalPageNumber = request.totalPages
+                result = request.results as MutableList
+                movieListAdapter.updateMovieList(result)
+            }else{
+                errorMessage.value = R.string.noResultFound
+            }
         }
-
     }
 
     private fun onRetrievePostListError(e: Throwable) {
@@ -141,46 +158,52 @@ class MovieListViewModel() : BaseViewModel() {
     }
 
 
-    fun getUserClickedItemObservable(): LiveData<Result>? {
+    internal fun updateUserClickedItemToView(): LiveData<Result>? {
         return userClickedItemObservable
     }
 
     internal fun searchMovieName(searchString: String) {
-        result.clear()
-        subscription = movieListApi.searchMovieName(
-            BuildConfig.API_KEY,
-            Constants.TAG_LANGUAGE, searchString, Constants.PAGE_NUMBER
-        )
-            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { onRetrieveMovieListStart() }
-            .doOnTerminate { onRetrieveMovieListFinish() }
-            .subscribeWith(object : DisposableObserver<Response<MovieApiResponseModel>>() {
-                override fun onComplete() {
+        if (NetworkConnectivity.isNetworkAvailable(getContext)) {
+            result.clear()
+            subscription = movieListApi.searchMovieName(
+                BuildConfig.API_KEY,
+                Constants.TAG_LANGUAGE, searchString, Constants.PAGE_NUMBER
+            )
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { onRetrieveMovieListStart() }
+                .doOnTerminate { onRetrieveMovieListFinish() }
+                .subscribeWith(object : DisposableObserver<Response<MovieApiResponseModel>>() {
+                    override fun onComplete() {
 
-                }
+                    }
 
-                override fun onNext(t: Response<MovieApiResponseModel>) {
-                    onRetrievePostListSuccess(t)
-                }
+                    override fun onNext(t: Response<MovieApiResponseModel>) {
+                        onRetrievePostListSuccess(t)
+                    }
 
-                override fun onError(e: Throwable) {
-                    onRetrievePostListError(e)
-                }
-
-            })
+                    override fun onError(e: Throwable) {
+                        onRetrievePostListError(e)
+                    }
+                })
+        }else{
+            networkStatus.value = true
+        }
     }
 
-    internal fun OnItemClick() {
-        subscription = movieListAdapter.clickEvent.subscribe { it ->
+    private fun onItemClick() {
+        subscription = movieListAdapter.clickEvent.subscribe {
             userClickedItemObservable.value = it
         }
     }
 
-    internal fun loadInitalMovieList() {
-        loadingVisibility.value = View.VISIBLE
+    internal fun refreshMovieList() {
         result.clear()
-        loadMovieList()
+        Constants.PAGE_NUMBER = 1
+        loadMovieList(getContext)
     }
 
+    internal fun updateNetworkStatusToView(): LiveData<Boolean> {
+        return networkStatus
+    }
 
 }

@@ -10,7 +10,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /*
  * Project Name : MovieApp
@@ -33,7 +32,6 @@ object RetrofitClient {
             .client(okhttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
-
     }
 
     @Provides
@@ -50,8 +48,6 @@ object RetrofitClient {
             } finally {
             }
         }
-
-
     }
 
     /**
@@ -65,6 +61,4 @@ object RetrofitClient {
     internal fun providePostApi(retrofit: Retrofit): RetrofitInterface {
         return retrofit.create(RetrofitInterface::class.java)
     }
-
-
 }

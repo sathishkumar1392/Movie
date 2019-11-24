@@ -22,46 +22,47 @@ import io.reactivex.subjects.PublishSubject
  * Desc : 
  */
 
-class MovieAdapter() :
+ class MovieAdapter :
     RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
     private lateinit var movieList: List<Result>
     private val clickSubject = PublishSubject.create<Result>()
     val clickEvent: Observable<Result> = clickSubject
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding: ItemMovieDetailsBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             R.layout.item_movie_details, parent, false
         )
-        return ViewHolder(binding,clickSubject)
+        return ViewHolder(binding, clickSubject)
     }
 
     override fun getItemCount(): Int {
         return if (::movieList.isInitialized) movieList.size else 0
     }
 
-    override fun onBindViewHolder(holder: MovieAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(movieList[position])
-
     }
 
-    fun updateMovieList(movieList: List<Result>) {
+    internal fun updateMovieList(movieList: List<Result>) {
         this.movieList = movieList
         notifyDataSetChanged()
     }
 
 
-    class ViewHolder(
+     class ViewHolder(
         private val binding: ItemMovieDetailsBinding,
         clickSubject: PublishSubject<Result>
     ) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         private var item: Result? = null
-       val publishSub = clickSubject
+        val publishSub = clickSubject
+
         init {
             itemView.setOnClickListener(this)
         }
 
-        fun bind(item: Result) {
+        internal fun bind(item: Result) {
             this.item = item
             binding.itemDetails = item
         }

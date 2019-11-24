@@ -62,6 +62,4 @@ data class Result(
     var voteAverage: Double = 0.3, // 5.4
     @SerializedName("vote_count")
     val voteCount: Int = 0 // 723
-
-
 )

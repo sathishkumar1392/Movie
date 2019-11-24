@@ -83,9 +83,7 @@ class MovieListViewModel : BaseViewModel() {
 
         } else {
             networkStatus.value = true
-
         }
-
     }
 
 

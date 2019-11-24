@@ -112,20 +112,6 @@
             app:layout_constraintStart_toEndOf="@+id/gL_image_size_margin"
             app:layout_constraintTop_toBottomOf="@+id/gl_tittlebar" />
 
-        <RatingBar
-            android:id="@+id/rating_Bar"
-            style="?android:attr/ratingBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="55dp"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:padding="1dp"
-            android:stepSize="0.5"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/gl_left_margin"
-            app:layout_constraintTop_toBottomOf="@id/ImgView_poster"
-            app:ratingBar="@{itemDetails.voteAverage}" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -14,8 +14,9 @@ import com.task.movie.remote.RetrofitClient
  * File Name : BaseViewModel.kt
  * ClassName : BaseViewModel
  * Module Name : app
- * Desc : 
+ * Desc :  Inject the BaseViewModel
  */
+
 abstract class BaseViewModel: ViewModel() {
 
     private val injector: ViewModelInjector = DaggerViewModelInjector
@@ -27,6 +28,9 @@ abstract class BaseViewModel: ViewModel() {
         inject()
     }
 
+    /**
+     * Injects the required dependencies
+     */
     private fun inject() {
         when (this) {
             is MovieListViewModel -> injector.inject(this)

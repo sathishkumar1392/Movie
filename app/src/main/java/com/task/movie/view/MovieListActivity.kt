@@ -28,7 +28,7 @@ import com.task.movie.viewmodel.MovieListViewModel
  * Created on : 18-11-2019 10:29
  * Updated on :
  * File Name : MovieListActivity.kt
- * ClassName :
+ * ClassName : MovieListActivity
  * Module Name : app
  * Desc :
  */
@@ -65,11 +65,8 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun getNetworkStatusFromViewModel() {
-        viewModel.updateNetworkStatusToView().observe(this,object :Observer<Boolean>{
-            override fun onChanged(t: Boolean?) {
-                val networkStatus = t
-                if (networkStatus!!) checkNetworkConnectivity()
-            }
+        viewModel.updateNetworkStatusToView().observe(this, Observer{
+                if (it!! && it == true) checkNetworkConnectivity()
         })
     }
 
@@ -87,7 +84,6 @@ class MovieListActivity : AppCompatActivity() {
             }
         })
     }
-
 
 
     private fun initSearchView(): Boolean {
@@ -150,7 +146,7 @@ class MovieListActivity : AppCompatActivity() {
                     userScrolled = true
                     loadMore(userScrolled)
                     userScrolled = false
-                }else if (linearLayoutManager.findFirstCompletelyVisibleItemPosition()==0){
+                } else if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                     reset()
 
                 }
@@ -159,7 +155,7 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun reset() {
-        Constants.PAGE_NUMBER =1
+        Constants.PAGE_NUMBER = 1
     }
 
 
@@ -168,12 +164,11 @@ class MovieListActivity : AppCompatActivity() {
     }
 
 
-
     private fun showError(@StringRes errorMessage: Int) {
         errorSnackBar = Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_SHORT)
-        if (errorMessage ==(R.string.noResultFound)){
+        if (errorMessage == (R.string.noResultFound)) {
             errorSnackBar?.setText(R.string.noResultFound)
-        }else{
+        } else {
             errorSnackBar?.setText(R.string.noItemFound)
         }
         errorSnackBar?.show()
@@ -182,7 +177,6 @@ class MovieListActivity : AppCompatActivity() {
     private fun hideError() {
         errorSnackBar?.dismiss()
     }
-
 
 
     // Checking NetworkState

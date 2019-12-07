@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="itemDetails"
             type="com.task.movie.model.Result" />
@@ -15,8 +17,7 @@
         android:id="@+id/blog_item_holder"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/black_alpha_60"
-        >
+        android:background="@color/black_alpha_60">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_tittle"

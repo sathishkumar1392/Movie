@@ -2,7 +2,9 @@ package com.task.movie.viewmodel
 
 import android.content.Context
 import android.view.View
+import androidx.databinding.BaseObservable
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.task.movie.BuildConfig
 import com.task.movie.R
@@ -90,7 +92,7 @@ class MovieListViewModel : BaseViewModel() {
     internal fun loadMore(userScrolled: Boolean) {
         if (NetworkConnectivity.isNetworkAvailable(getContext)) {
             if (totalPageNumber != Constants.PAGE_NUMBER) {
-                if (userScrolled){
+                if (userScrolled) {
                     Constants.PAGE_NUMBER = Constants.PAGE_NUMBER + 1
                     subscription = movieListApi.getMovieList(
                         BuildConfig.API_KEY,
@@ -99,7 +101,8 @@ class MovieListViewModel : BaseViewModel() {
                         .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe { onRetrieveMovieListStart() }
                         .doOnTerminate { onRetrieveMovieListFinish() }
-                        .subscribeWith(object : DisposableObserver<Response<MovieApiResponseModel>>() {
+                        .subscribeWith(object :
+                            DisposableObserver<Response<MovieApiResponseModel>>() {
                             override fun onComplete() {
 
                             }
@@ -113,13 +116,13 @@ class MovieListViewModel : BaseViewModel() {
                             }
 
                         })
-                }else{
+                } else {
                     networkStatus.value = true
                 }
             } else {
                 errorMessage.value = R.string.noResultFound
             }
-            }
+        }
     }
 
     private fun onUpdateList(res: Response<MovieApiResponseModel>) {
@@ -143,11 +146,11 @@ class MovieListViewModel : BaseViewModel() {
     private fun onRetrievePostListSuccess(response: Response<MovieApiResponseModel>) {
         if (response.isSuccessful) {
             val request = response.body()
-            if (request!!.totalResults>0) {
+            if (request!!.totalResults > 0) {
                 totalPageNumber = request.totalPages
                 result = request.results as MutableList
                 movieListAdapter.updateMovieList(result)
-            }else{
+            } else {
                 errorMessage.value = R.string.noResultFound
             }
         }
@@ -185,7 +188,7 @@ class MovieListViewModel : BaseViewModel() {
                         onRetrievePostListError(e)
                     }
                 })
-        }else{
+        } else {
             networkStatus.value = true
         }
     }
@@ -204,6 +207,6 @@ class MovieListViewModel : BaseViewModel() {
 
     internal fun updateNetworkStatusToView(): LiveData<Boolean> {
         return networkStatus
-    }
+}
 
 }

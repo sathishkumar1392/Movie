@@ -14,8 +14,6 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-
     }
 
 
@@ -78,8 +76,9 @@ dependencies {
     /* Testing Library*/
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    testImplementation 'org.mockito:mockito-core:2.19.0'
+    testImplementation 'org.mockito:mockito-core:2.25.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
 
 
     /*Android Architecture Component - LiveData & ViewModel  */
@@ -120,7 +119,7 @@ dependencies {
     * the following dependencies */
     implementation "com.google.dagger:dagger:$dagger2_version"
     kapt "com.google.dagger:dagger-compiler:$dagger2_version"
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.19'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.23.2'
     compileOnly "org.glassfish:javax.annotation:3.1.1"
     implementation 'com.google.android.material:material:1.0.0'
 

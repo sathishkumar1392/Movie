@@ -29,7 +29,7 @@ android {
 
             //*Dev BASE URL
             buildConfigField "String", "BASE_URL", '"https://api.themoviedb.org/3/"'
-            buildConfigField "String", "API_KEY", '"55524ac9c03e998ff26aa9a875f7b108"'
+            buildConfigField "String", "API_KEY", '""'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -39,7 +39,7 @@ android {
             buildConfigField "boolean", "RETROFIT_LOG_INTERCEPTOR", "false"
             //Staging BASE URL
             buildConfigField "String", "BASE_URL", '"https://api.themoviedb.org/3/"'
-            buildConfigField "String", "API_KEY", '"55524ac9c03e998ff26aa9a875f7b108"'
+            buildConfigField "String", "API_KEY", '""'
             debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
